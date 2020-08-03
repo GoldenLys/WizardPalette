@@ -6,7 +6,7 @@ var APP = {
 };
 
 (function () {
-    document.title = "Purple Picker v" + APP.VERSION;
+    document.title = "Wizard Palette v" + APP.VERSION;
 
     $("#range-red").bind('input', function () {
         document.documentElement.style.setProperty('--EDITOR_RED', $("#range-red").val());
