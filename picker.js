@@ -1,6 +1,6 @@
 var APP = {
     TYPES: ["red", "green", "blue"],
-    VERSION: 0.1,
+    VERSION: 0.2,
     PICKER: [0, 0, 0],
     SELECTION: "",
 };
@@ -50,11 +50,7 @@ var APP = {
         WP_CHANGE(2, true);
     });
 
-    $("#button-validate").on("click", function () {
-        $("body").css("background-color", APP.SELECTION);
-    });
-
-    $(".hex-color #copy").on("click", function () {
+    $(".color-picker #copy-hex").on("click", function () {
         let SELECTED = document.createElement('textarea');
         SELECTED.value = "#" + $("#color-name").attr("placeholder");
         document.body.appendChild(SELECTED);
@@ -62,6 +58,18 @@ var APP = {
         document.execCommand('copy');
         document.body.removeChild(SELECTED);
         window.getSelection().removeAllRanges();
+        alert("Copied to clipboard");
+    });
+
+    $(".color-picker #copy-rgb").on("click", function () {
+        let SELECTED = document.createElement('textarea');
+        SELECTED.value = "rgb(" + $("#range-red").val() + " " + $("#range-green").val() + " " + $("#range-blue").val() + ")";
+        document.body.appendChild(SELECTED);
+        SELECTED.select();
+        document.execCommand('copy');
+        document.body.removeChild(SELECTED);
+        window.getSelection().removeAllRanges();
+        alert("Copied to clipboard");
     });
 })();
 
@@ -78,7 +86,6 @@ const WP_CHANGE = function (TYPE, PARAM) {
 
 const WP_UPDATE = function () {
     APP.SELECTION = "rgb(" + APP.PICKER[0] + " " + APP.PICKER[1] + " " + APP.PICKER[2] + ")";
-    $(".button-validate").attr("style", "background-color: " + APP.SELECTION + ";");
 
     for (let COLOR in APP.PICKER) {
         $("#selector-" + APP.TYPES[COLOR] + " .value").html(APP.PICKER[COLOR]);

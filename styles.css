@@ -5,6 +5,7 @@
 }
 
 body {
+	font-family: "Inter", sans-serif;
 	margin: 0;
 	background: #151725;
 }
@@ -63,7 +64,6 @@ body {
 	width: calc(100% - 6rem);
 	-webkit-appearance: none;
 	font-size: 1.35rem;
-	margin: 0 .5em;
 	line-height: 3rem;
 	height: 3rem;
 	margin: 0;
@@ -72,7 +72,12 @@ body {
 	outline: none;
 }
 
+.color-picker .buttons {
+	display: flex;
+}
+
 .color-picker .button-validate {
+	flex: 1 1 auto;
 	height: 100%;
 	background: rgb(21 23 37 / 50%);
 	box-shadow: 2px 3px 5px 0 rgb(21 23 37 / 50%);
@@ -83,9 +88,20 @@ body {
 	font-size: 1.25rem;
 	text-shadow: 0 0 5px;
 	line-height: 1.25rem;
-	border-radius: 10px;
 	text-align: center;
 	transition: all .5s ease-out;
+}
+
+.color-picker .button-validate:first-child {
+	border-radius: 10px 0 0 10px;
+}
+
+.color-picker .button-validate:last-child {
+	border-radius: 0 10px 10px 0;
+}
+
+.color-picker .button-validate:hover {
+	background: rgb(21 23 37 / 100%);
 }
 
 #range-red {
