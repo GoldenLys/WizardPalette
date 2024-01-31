@@ -1,6 +1,10 @@
+// TODO list
+// - Add import / export palette
+// - Add function to export palette as gradient
+
 var APP = {
     TYPES: ["red", "green", "blue"],
-    VERSION: "1.1",
+    VERSION: "1.2",
     PICKER: [0, 0, 0],
     SELECTION: "",
     PRESET: [
@@ -23,7 +27,7 @@ var APP = {
         [255, 255, 255], // White
         [192, 192, 192], // Silver
         [128, 128, 128], // Gray
-        [56, 56, 56],    // Gray
+        [56, 56, 56],    // Dark Gray
         [0, 0, 0],       // Black
     ],
     PALETTES: [[
@@ -52,7 +56,7 @@ const UPDATE_PALETTES = function () {
             </div>`);
         });
     } else {
-        $("#custom-palettes").html(`<div id="new-palette" class="button plus"><i class="fal fa-layer-plus"></i></div>`);
+        $("#custom-palettes").html(`No Palettes Found.`);
     }
 };
 
@@ -174,7 +178,12 @@ const LOAD_EVENTS = function () {
         UPDATE_PALETTES();
     });
 
-    ;
+    $(".color-picker").on("click", ".palette .color", function (e) {
+        e.preventDefault();
+        const rgb = $(this).css('backgroundColor').replace(/[^\d,]/g, '').split(',');
+        const [r, g, b] = rgb.map(Number);
+        LOAD_PRESET(r, g, b);
+    });
 
     $(".color-picker").on("click", "#copy-hex, #copy-rgb, #copy-hsl", function (e) {
         e.preventDefault();
