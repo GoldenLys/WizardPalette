@@ -141,17 +141,17 @@ body {
 
 .color-picker .selector .container {
 	position: absolute;
-	top: -2.5px;
+	top: 0px;
 	left: 40px;
 	right: 40px;
 	bottom: 0;
-	line-height: 35px;
+	line-height: 30px;
 }
 
 .color-picker .selector .container .value {
 	color: black;
 	text-align: center;
-	width: 35px;
+	width: 30px;
 	background: rgb(255 255 255);
 	border-radius: 50%;
 }
@@ -183,6 +183,12 @@ body {
 	flex: 0 1 auto;
 }
 
+.color-picker .title-container .small.title {
+	line-height: 20px;
+    font-size: 16px;
+	flex: 0 1 auto;
+}
+
 .color-picker .hex-color .text {
 	float: left;
 }
@@ -204,23 +210,33 @@ body {
 }
 
 .color-picker .divider {
+	display: block;
 	margin: 5px 0;
 	width: 100%;
 	height: 1px;
 	text-align: center;
 	background: rgb(119 119 119 / 25%);
-	display: block;
+}
+
+.color-picker .vertical.divider {
+    width: 1px;
+    height: 100%;
+    margin: 0 5px;
 }
 
 .presets {
 	display: flex;
+	flex: 1 1 auto;
 	align-content: center;
 	justify-content: center;
-	padding: 10px 5px;
+	padding: 0px;
+	flex-wrap: wrap;
 }
 
 .preset {
+	min-width: 10px;
 	width: 10px;
+	min-height: 10px;
 	height: 10px;
 	margin: 0 0px;
 	padding: 10px;
@@ -230,6 +246,65 @@ body {
 	outline: none;
 	color: white;
 	border-radius: 50%;
+}
+
+.custom-palettes {
+	display: flex;
+	flex-wrap: wrap;
+	flex: 1 1 auto;
+	align-content: center;
+	justify-content: center;
+	padding: 0px;
+}
+
+.palette {
+	display: flex;
+	flex-direction: column;
+	flex: 0 1 auto;
+	margin: 0 5px;
+	justify-content: flex-start;
+	padding: 0px;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.palette .color-container {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: center;
+    border-radius: 10px;
+    background: rgb(119 119 119 / 25%);
+    padding: 5px 10px;
+    margin: 0 0 5px;
+}
+
+.palette .color {
+	min-width: 10px;
+	width: 10px;
+	min-height: 10px;
+	height: 10px;
+	margin: 0;
+	padding: 10px;
+	background-color: rgba(0 0 0);
+	border: none;
+	color: white;
+	border-radius: 50%;
+}
+
+.palette .color-container .button.remove-color {
+	margin: 0px 0px 0px 5px;
+	font-size: 16px;
+	line-height: 30px;
+	margin-top: auto;
+	width: 30px;
+	height: 30px;
+	color: #D72323;
+}
+
+.palette .color-container .button.remove-color:hover {
+	background-color: transparent;
+    color: #d76969;
 }
 
 .color-value-container {
@@ -260,4 +335,26 @@ body {
 
 .subtext  {
 	color: #a7a7a7;
+}
+
+.color-picker .button.add {
+	margin-bottom: 5px;
+	width: 30px;
+	height: 30px;
+}
+
+.color-picker .button.delete {
+	margin-top: auto;
+	width: 100%;
+	height: 30px;
+	color: #D72323;
+}
+
+.color-picker .button.delete:hover {
+    background-color: transparent;
+    color: #d76969;
+}
+
+.top-aligned {
+	align-self: flex-start;
 }
