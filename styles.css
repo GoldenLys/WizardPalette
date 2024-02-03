@@ -37,7 +37,7 @@ body {
 
 .color-picker .content.no-padding {
 	padding: 0 0;
-} 
+}
 
 .color-picker .selector {
 	position: relative;
@@ -53,7 +53,7 @@ body {
 	cursor: pointer;
 	font-size: 20px;
 	line-height: 30px;
-	border-radius: 50%;
+	border-radius: 10px;
 	margin: 0 5px;
 	min-width: 30px;
 	width: 30px;
@@ -175,6 +175,7 @@ body {
 	line-height: 20px;
 	font-size: 20px;
 	justify-content: center;
+	flex-wrap: nowrap;
 }
 
 .color-picker .title-container .title {
@@ -185,7 +186,7 @@ body {
 
 .color-picker .title-container .small.title {
 	line-height: 20px;
-    font-size: 16px;
+	font-size: 16px;
 	flex: 0 1 auto;
 }
 
@@ -197,7 +198,9 @@ body {
 	float: right;
 }
 
-.color-picker input[type="text"]:hover, input[type="text"]:active, input[type="text"]:focus {
+.color-picker input[type="text"]:hover,
+input[type="text"]:active,
+input[type="text"]:focus {
 	background-color: rgba(255 255 255 / 30%);
 	border: none;
 	outline: none;
@@ -219,9 +222,9 @@ body {
 }
 
 .color-picker .vertical.divider {
-    width: 1px;
-    height: 100%;
-    margin: 0 5px;
+	width: 1px;
+	height: 100%;
+	margin: 0 5px;
 }
 
 .presets {
@@ -269,42 +272,66 @@ body {
 }
 
 .palette .color-container {
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    justify-content: center;
-    border-radius: 10px;
-    background: rgb(119 119 119 / 25%);
-    padding: 5px 10px;
-    margin: 0 0 5px;
+	position: relative;
+	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: row;
+	border-radius: 10px;
+	background: rgb(119 119 119 / 25%);
+	padding: 0px;
+	margin: 0 0 5px;
+	align-items: center;
+	justify-content: center;
+	transition: all 500ms linear;
+}
+
+.palette .color-container:hover {
+	padding: 5px 30px 5px 30px;
+}
+
+.palette .color-container .container-move,
+.palette .color-container .remove-color {
+	visibility: hidden;
+	transition: all 0ms linear;
+}
+
+.palette .color-container:hover .container-move,
+.palette .color-container:hover .remove-color {
+	visibility: visible;
 }
 
 .palette .color {
-	min-width: 10px;
-	width: 10px;
-	min-height: 10px;
-	height: 10px;
+	min-width: 15px;
+	width: 15px;
+	min-height: 15px;
+	height: 15px;
 	margin: 0;
 	padding: 10px;
 	background-color: rgba(0 0 0);
 	border: none;
 	color: white;
-	border-radius: 50%;
+	border-radius: 10px;
 }
 
 .palette .color-container .button.remove-color {
-	margin: 0px 0px 0px 5px;
+	display: flex;
+	position: absolute;
+	top: 0px;
+	right: 0;
+	bottom: 0;
+	height: calc(100% + 0px);
+	margin: 0;
 	font-size: 16px;
 	line-height: 30px;
-	margin-top: auto;
 	width: 30px;
-	height: 30px;
 	color: #D72323;
+	justify-content: center;
+	align-items: center;
 }
 
 .palette .color-container .button.remove-color:hover {
 	background-color: transparent;
-    color: #d76969;
+	color: #d76969;
 }
 
 .color-value-container {
@@ -325,7 +352,7 @@ body {
 	line-height: 20px;
 }
 
-.text  {
+.text {
 	color: #FFF;
 }
 
@@ -333,7 +360,7 @@ body {
 	text-transform: uppercase;
 }
 
-.subtext  {
+.subtext {
 	color: #a7a7a7;
 }
 
@@ -344,17 +371,140 @@ body {
 }
 
 .color-picker .button.delete {
-	margin-top: auto;
-	width: 100%;
+	width: auto;
 	height: 30px;
 	color: #D72323;
 }
 
 .color-picker .button.delete:hover {
-    background-color: transparent;
-    color: #d76969;
+	background-color: transparent;
+	color: #d76969;
+}
+
+.color-picker .container-actions {
+	display: flex;
+	margin-top: auto;
+	width: 100%;
+	color: #D72323;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
 }
 
 .top-aligned {
 	align-self: flex-start;
+}
+
+.notice {
+	display: block;
+	visibility: hidden;
+	background: transparent;
+	position: relative;
+	align-items: center;
+	justify-content: center;
+	transition: visibility 0s ease 0s, background-color 250ms ease 0s;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+.notice.active {
+	visibility: visible;
+}
+
+.notice .title {
+	color: rgb(255 255 255);
+	line-height: 1.5em;
+	font-size: 1.25em;
+	text-align: center;
+	padding: 5px 0px 0px;
+	margin: 0.5em 0px 0px;
+}
+
+.notice .countdown {
+	content: " ";
+	display: block;
+	height: 0.5em;
+	font-weight: bold;
+	position: absolute;
+	top: 5px;
+	left: 0px;
+	right: 0px;
+	margin: 0px 10px;
+	background: rgb(255 255 255 / 35%);
+	border-radius: 2.5px;
+	transition: width 1000ms ease 0s;
+}
+
+.notice .text {
+	line-height: 1.25em;
+	font-size: 1em;
+	text-align: center;
+	padding: 0.5em 0px 1em;
+	overflow-wrap: break-word;
+}
+
+.notice .content {
+	box-shadow: rgb(10, 10, 10) 0px 0px 5px;
+	min-width: 15%;
+	max-width: calc(30% - 30px);
+	text-align: center;
+	border-radius: 5px;
+	background: rgb(119 119 119 / 25%);
+	position: fixed;
+	bottom: 5px;
+	right: 5px;
+	padding: 0px 10px;
+}
+
+.notice:not(.active) .content,
+.notice:not(.active) * {
+	line-height: 0;
+	font-size: 0px;
+	background: transparent;
+	box-shadow: none;
+	visibility: hidden;
+}
+
+.color-picker .container-move {
+	position: absolute;
+	top: 0px;
+	left: 0;
+	height: calc(100% + 0px);
+}
+
+.color-picker .container-move .button.up {
+	display: flex;
+	height: 50%;
+	border-radius: 10px;
+	font-size: 16px;
+	line-height: 16px;
+	margin: 0;
+	justify-content: center;
+	align-items: center;
+}
+
+.color-picker .container-move .button.down {
+	display: flex;
+	height: 50%;
+	border-radius: 10px;
+	font-size: 16px;
+	line-height: 16px;
+	margin: 0;
+	justify-content: center;
+	align-items: center;
+}
+
+.palette .color-container.first-color .container-move .button.up {
+    visibility: hidden !important;
+}
+
+.palette .color-container.last-color .container-move .button.down {
+    visibility: hidden !important;
+}
+
+.color-picker .button.copy {
+	margin-bottom: 0px;
+	width: 30px;
+	height: 30px;
 }

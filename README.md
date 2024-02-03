@@ -2,7 +2,7 @@
 
 Welcome to the Wizard Palette – a magical color palette designed for web and application developers who wish to enchant their designs with a touch of magic.
 
-![Wizard Palette](https://goldenlys.github.io/WizardPalette/preview.png)
+![Wizard Palette](https://goldenlys.github.io/WizardPalette/images/preview.png)
 
 The Wizard Palette comes with a collection of primary and accent color presets, perfect for styling UI components, themes, and more.
 

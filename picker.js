@@ -1,10 +1,10 @@
-// TODO list
-// - Add import / export palette
-// - Add function to export palette as gradient
+// TODO list :
+// - Add function to import palettes 
+
 
 var APP = {
     TYPES: ["red", "green", "blue"],
-    VERSION: "1.2",
+    VERSION: "1.3",
     PICKER: [0, 0, 0],
     SELECTION: "",
     PRESET: [
@@ -33,31 +33,46 @@ var APP = {
     PALETTES: [[
         [0, 0, 0],
         [255, 255, 255],
-    ]]
+    ]],
+    NOTICE_TIMER: 0,
 };
 
 const UPDATE_PALETTES = function () {
     if (APP.PALETTES.length > 0) {
         $("#custom-palettes").html("");
-
-
         APP.PALETTES.forEach((palette, index) => {
             let COLORS = "";
-            APP.PALETTES[index].forEach((color, index) => {
-                COLORS += `<div class="color-container"><div id="color-${index}" class="color" style="background-color: rgb(${color.join(', ')});"></div><div id="remove-color-${index}" class="button remove-color"><i class="fal fa-minus"></i></div></div>`;
-            })
+            palette.forEach((color, index2) => {
+                let colorContainerClass = "color-container";
+                if (index2 === 0) colorContainerClass += " first-color";
+                else if (index2 === palette.length - 1) colorContainerClass += " last-color";
+                COLORS += `<div class="${colorContainerClass}">
+                <div class="container-move">
+                <div class="button up" onclick="MOVE_COLOR('up', ${index}, ${index2})"><i class="fal fa-arrow-up"></i></div>
+                <div class="button down" onclick="MOVE_COLOR('down', ${index}, ${index2})"><i class="fal fa-arrow-down"></i></div>
+                </div>
+                <div id="color-${index2}" class="color" style="background-color: rgb(${color.join(', ')});"></div><div id="remove-color-${index}" class="button remove-color"><i class="fal fa-minus"></i></div></div>`;
+            });
 
             $("#custom-palettes").append(`<div id="palette-${index}" class="palette">
-            <div class="title-container"><div class="small title">Palette ${index + 1}</div></div>
-            <div class="divider"></div>
-            ${COLORS}
-            <div id="add-${index}" class="button add"><i class="fal fa-plus"></i></div>
-            <div id="delete-${index}" class="button delete"><div class="divider"></div><i class="fa-light fa-trash-can-xmark"></i></div>
+                <div class="title-container">
+                    <div class="small title">Palette ${index + 1}</div>
+                    <div id="delete-${index}" class="button delete"><i class="fa-light fa-trash-can-xmark"></i></div>
+                </div>
+                <div class="divider"></div>
+                ${COLORS}
+                <div id="add-${index}" class="button add"><i class="fal fa-plus"></i></div>
+                <div id="actions-${index}" class="container-actions">
+                    <div class="divider"></div>
+                    <div id="copy-palette-${index}" class="button copy" onclick="EXPORT_PALETTE(${index})"><i class="fa-light fa-copy"></i></div>
+                    <div id="copy-gradient-${index}" class="button copy" onclick="EXPORT_GRADIENT(${index})"><i class="fa-light fa-palette"></i></div>
+                </div>
             </div>`);
         });
     } else {
         $("#custom-palettes").html(`No Palettes Found.`);
     }
+    SAVE_DATA();
 };
 
 const CHANGE_RGB = function (TYPE, PARAM) {
@@ -83,7 +98,7 @@ const UPDATE_APP = function () {
     $("#color-preview").attr("style", "background-color: " + APP.SELECTION + ";");
     $("#color-preview2").attr("style", "background-color: " + APP.SELECTION + ";");
     $("#color-preview3").attr("style", "background-color: " + APP.SELECTION + ";");
-
+    SAVE_DATA();
 };
 const RGBTOHEX = function (a) {
     a = a.replace(/[^\d,]/g, "").split(",");
@@ -205,13 +220,126 @@ const LOAD_EVENTS = function () {
         }
 
         navigator.clipboard.writeText(value).then(() => {
-            alert("Copied " + type + " value to clipboard");
+            NOTICE("Copied " + type + " value to clipboard", value);
         });
     });
 };
 
+// SAVE AND LOAD FUNCTIONS
+const SAVE_DATA = function () {
+    localStorage.setItem("WizardPalette", JSON.stringify(APP.PALETTES));
+};
+
+const LOAD_SAVE = function () {
+    let savegame = JSON.parse(localStorage.getItem("WizardPalette"));
+    for (var property in savegame) {
+        if (typeof savegame[property] !== "undefined") APP.PALETTES[property] = savegame[property];
+    }
+}
+
+const EXPORT_SAVE = async function () {
+    try {
+        const saveData = btoa(JSON.stringify(APP.PALETTES));
+        await navigator.clipboard.writeText(saveData);
+        NOTICE("Save exported", "Your save is now copied to your clipboard.");
+    } catch (error) {
+        console.error("Error copying save to clipboard:", error);
+        NOTICE("Error", "Failed to copy save to clipboard.");
+    }
+}
+
+const IMPORT_SAVE = function () {
+    var SAVE = prompt("Paste your save code here");
+    if (SAVE) {
+        RESTORE_SAVE(SAVE);
+        NOTICE("Save imported", "Your save has been successfully imported.");
+    }
+}
+
+const RESTORE_SAVE = function (SAVE) {
+    try {
+        var decoded = atob(SAVE);
+        JSON.parse(decoded);
+        if (decoded) {
+            localStorage.setItem("WizardPalette", decoded);
+            LOAD_SAVE();
+        } else NOTICE("Error", "Invalid save data.");
+    } catch (err) {
+        NOTICE("Error", "Invalid save data.");
+    }
+}
+
+const NOTICE = function (title, content) {
+    $("#notice-title").html(title);
+    $("#notice-text").html(content);
+    $("#NOTICE").attr("class", "notice active");
+    NOTICE_TIMER = [5, setInterval(NOTICE_TIMING, 1000)];
+    NOTICE_TIMING();
+};
+
+const NOTICE_TIMING = function () {
+    let PERCENT = (100 / 5) * NOTICE_TIMER[0];
+    $("#notice-countdown").attr("style", `width: calc(${PERCENT}% - 20px);`);
+    if (NOTICE_TIMER[0] > 0) NOTICE_TIMER[0]--;
+    else {
+        clearInterval(NOTICE_TIMER[1]);
+        $("#NOTICE").attr("class", "notice");
+        $("#notice-title").html("");
+        $("#notice-text").html("");
+    }
+};
+
+const MOVE_COLOR = function(direction = 'up', paletteIndex = 0, colorIndex = 0) {
+    const palette = APP.PALETTES[paletteIndex];
+    if (!palette || colorIndex < 0 || colorIndex >= palette.length) return;
+
+    const swapIndex = direction === 'up' ? colorIndex - 1 : colorIndex + 1;
+    if (swapIndex < 0 || swapIndex >= palette.length) return;
+
+    [palette[colorIndex], palette[swapIndex]] = [palette[swapIndex], palette[colorIndex]];
+    UPDATE_PALETTES();
+};
+
+const EXPORT_TEXT = async function (DATA) {
+    try {
+        await navigator.clipboard.writeText(DATA);
+    } catch (error) {
+        console.error("Error copying save to clipboard:", error);
+        NOTICE("Error", "Failed to copy save to clipboard.");
+    }
+}
+
+const EXPORT_PALETTE = function (palette) {
+    let palette_text = "";
+    if (APP.PALETTES.length > 0) {
+            APP.PALETTES[palette].forEach((color, index) => {
+                let first_color = index === 0 ? "#" : " #"; 
+                let last_color = (index === APP.PALETTES[palette].length - 1) ? "" : ","; 
+                palette_text = palette_text + first_color +RGBTOHEX(color.join(', ')) + last_color;
+            });
+    }
+    EXPORT_TEXT(palette_text);
+    NOTICE("Palette exported", "Your palette is now copied to your clipboard.");
+};
+
+
+const EXPORT_GRADIENT = function (palette) {
+    let gradient_text = "";
+    if (APP.PALETTES.length > 0) {
+            APP.PALETTES[palette].forEach((color, index) => {
+                let first_color = index === 0 ? "linear-gradient(to right, #" : " #"; 
+                let last_color = (index === APP.PALETTES[palette].length - 1) ? ")" : ","; 
+                gradient_text = gradient_text + first_color +RGBTOHEX(color.join(', ')) + last_color;
+            });
+    }
+    EXPORT_TEXT(gradient_text);
+    NOTICE("Gradient exported", "Your gradient is now copied to your clipboard.");
+};
+
+
 (function () {
     document.title = `Wizard Palette v${APP.VERSION}`;
+    if (localStorage.getItem("WizardPalette") !== null) LOAD_SAVE();
     LOAD_EVENTS();
     UPDATE_PRESETS();
     UPDATE_PALETTES();
